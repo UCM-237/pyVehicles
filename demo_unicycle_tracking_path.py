@@ -1,3 +1,10 @@
+import sys
+# Add paths
+sys.path.insert(1, './GNC')
+sys.path.insert(1, './graphics')
+sys.path.insert(1, './postproc')
+sys.path.insert(1, './vehicles')
+
 import pygame
 import matplotlib.pyplot as pl
 import drawmisc
