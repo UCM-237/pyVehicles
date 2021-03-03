@@ -94,55 +94,6 @@ class AgentDI(Agent):
         if(self.log_index >= self.log_capacity):
             self.log_index = 0
 
-    def consensus(self, dt):
-        u = np.zeros((2,1))
-
-        for nei in self.neighbors:
-            u = u + (self.pos - nei.pos)
-
-        u = -self.consensus_kc*u -self.consensus_kv*self.vel
-        self.step_dt(u, dt)
-
-    def distance_based(self, dt):
-        u = np.zeros((2,1))
-
-        for idx,nei in enumerate(self.neighbors):
-            z = self.pos - nei.pos
-            u = u + z/la.norm(z)*(la.norm(z) - self.desired_distances[idx])
-
-        u = -self.distance_based_kc*u -self.distance_based_kv*self.vel
-        self.step_dt(u, dt)
-
-    def distance_based_VI(self, dt):
-        u = np.zeros((2,1))
-
-        h = dt
-        kappa = self.distance_based_kv
-
-        kh = (kappa*h - 1) / (1 + kappa*h)
-        khb = (h**2) / (2*(1+kappa*h))
-
-        for idx,nei in enumerate(self.neighbors):
-            z = self.pos - nei.pos
-            Gamma = la.norm(z)**2 - self.desired_distances[idx]**2
-            u = u + z*Gamma
-
-        G = kh*self.pos_old + (2/(1+kappa*h))*self.pos
-
-        self.pos_old = self.pos
-
-        self.pos = G - khb*u
-
-        self.log_trajectory()
-
-        self.log_pos[self.log_index,:] = self.pos
-        self.log_vel[self.log_index,:] = self.vel
-        self.log_u[self.log_index,:] = u
-        self.log_index += 1
-        if(self.log_index >= self.log_capacity):
-            self.log_index = 0
-
-
     def draw(self, surf):
         pygame.draw.circle(surf, self.color, (int(self.pos[0][0]),int(surf.get_height()-self.pos[1][0])), 4, 0)
         if(self.traj_draw):
@@ -155,36 +106,6 @@ class AgentUnicycle(Agent):
         self.flock_ks = 0.3
         self.flock_kc = 1
         self.flock_ke = 1.3
-
-    def flocking(self, dt):
-        numnei = len(self.neighbors)
-        if(numnei <= 1):
-            desired_vel = self.vel
-        else:
-            centroid = np.zeros((2,1))
-            velavg = np.zeros((2,1))
-            separation = np.zeros((2,1))
-            desired_vel = np.zeros((2,1))
-
-            for nei in self.neighbors:
-                centroid += nei.pos
-                velavg += nei.vel
-                separation += self.pos - nei.pos
-
-            centroid /= numnei
-            velavg /= numnei
-
-            cohesion = centroid - self.pos
-
-            cohesion /= np.linalg.norm(cohesion)
-            separation /= np.linalg.norm(separation)
-            velavg /= np.linalg.norm(velavg)
-
-            desired_vel += self.flock_kva*velavg + self.flock_ks*separation + self.flock_kc*cohesion
-
-        error_theta = np.arctan2(desired_vel[1][0], desired_vel[0][0]) - self.theta
-
-        self.step_dt(0, self.flock_ke*error_theta, dt)
 
     def step_dt(self, us, uw, dt):
         self.theta += uw*dt
