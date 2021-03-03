@@ -60,7 +60,7 @@ while(runsim):
 
     for agent in list_of_agents:
         agent.draw(screen)
-        ut = gvf.gvf_control_2D(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, 1)
+        ut = gvf.gvf_control_2D_unicycle(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, 1)
         agent.step_dt(us, ut, dt)
 
     clock.tick(fps)

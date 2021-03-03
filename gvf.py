@@ -21,7 +21,7 @@ class Path_gvf_circle(Path_gvf):
         self.grad = np.array([[2*xel],[2*yel]])
         self.Hessian = 2*np.eye(2);
 
-def gvf_control_2D(p, dot_p, ke, kd, Path, direction):
+def gvf_control_2D_unicycle(p, dot_p, ke, kd, Path, direction):
     Path.calculate_e_grad_Hess(p)
     e = Path.e
     n = Path.grad
