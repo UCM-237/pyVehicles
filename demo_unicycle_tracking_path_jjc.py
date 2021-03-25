@@ -42,17 +42,26 @@ for i in range(num_of_agents):
     else:
         color = WHITE
 
-    list_of_agents.append(ag.AgentUnicycle(color, i, 1000*np.random.rand(2,1), 50-100*np.random.rand(2,1)))
+    list_of_agents.append(ag.AgentUnicycle(color, i, 1000*np.random.rand(2,1), 50-100*np.ones([2,1])))#*np.random.rand(2,1)))
 
 for agent in list_of_agents:
     agent.traj_draw = True
+    if agent.label == 0:
+        agent.neighbors.append = list_of_agents[1]        
+    elif agent.label == num_of_agents-1:
+        agent.neighbors = [num_of_agents-2]
+    else:
+        agent.neighbors = [agent.label-1,agent.label+1]
+     
+    
 
 # GVF
 ke_circle = 1e-3
 kd_circle = 1
 t = 100
-circle_path = gvf.Path_gvf_circle(500,500,100)
-
+#circle_path = gvf.Path_gvf_circle(500,500,100)
+circle_ctr = np.array([[500],[500])
+circle_r = 100
 # run simulation
 pygame.init()
 clock = pygame.time.Clock()
@@ -68,6 +77,12 @@ while(runsim):
 
     for agent in list_of_agents:
         agent.draw(screen)
+        agent_rpos = agent.pos - circle_ctr
+        agent_ang =  np.arctan2(agent_rpos[1],agent_rpos[0])
+        neighbours_ang_diffs = []
+        for i in agent.neighborgs:
+            
+        circle_path = circle_path = gvf.Path_gvf_circle(500,500,100+ )
         ut = gvf.gvf_control_2D_unicycle(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, 1)
         agent.step_dt(us, ut, dt)
     t = t + fps
