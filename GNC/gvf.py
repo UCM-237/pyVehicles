@@ -38,3 +38,12 @@ def gvf_control_2D_unicycle(p, dot_p, ke, kd, Path, direction):
     u_theta = dot_Xid + kd*dot_p.T.dot(E).dot(dot_pd)/(np.linalg.norm(dot_p)*np.linalg.norm(dot_pd))
 
     return float(u_theta)
+
+def gvf_control_2D_dist_circle_unicycle(agt,Kp,Path_gvf_circle):
+    alphap = np.arctan2(agt.p[1],agt.p[0])
+    us = 0.
+    for i in agt.neighbors:
+        us = us+ Kp*agt.desired_distancessign(agt.label\
+              - i[0])*(alphap-np.arctan2(i[2],i[1]))
+    return us
+                  
