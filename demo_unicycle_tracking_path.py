@@ -48,8 +48,8 @@ for agent in list_of_agents:
     agent.traj_draw = True
 
 # GVF
-ke_circle = 1e-3
-kd_circle = 1
+ke_circle = 5e-5
+kd_circle = 60
 circle_path = gvf.Path_gvf_circle(500,500,100)
 
 # run simulation
