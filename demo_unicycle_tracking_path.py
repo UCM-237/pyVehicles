@@ -21,10 +21,6 @@ CENTERX = WIDTH/2
 CENTERY = WIDTH/2
 
 BLACK = (  0,   0,   0)
-WHITE = (255, 255, 255)
-BLUE =  (  0,   0, 255)
-GREEN = (  0, 255,   0)
-RED =   (255,   0,   0)
 
 size = [WIDTH, HEIGHT]
 screen = pygame.display.set_mode(size)
@@ -33,16 +29,8 @@ num_of_agents = 3
 list_of_agents = []
 
 for i in range(num_of_agents):
-    if i == 1:
-        color = RED
-    elif i == 2:
-        color = GREEN
-    elif i == 3:
-        color = BLUE
-    else:
-        color = WHITE
-
-    list_of_agents.append(ag.AgentUnicycle(color, i, 1000*np.random.rand(2,1), 50-100*np.random.rand(2,1)))
+    theta_o = np.pi - (2*np.pi)*np.random.rand(1);
+    list_of_agents.append(ag.AgentUnicycle(list(pygame.colordict.THECOLORS.items())[np.random.randint(0,657)][1], i, 1000*np.random.rand(2,1), 60*np.array([[np.cos(theta_o[0])],[np.sin(theta_o[0])]])))
 
 for agent in list_of_agents:
     agent.traj_draw = True
