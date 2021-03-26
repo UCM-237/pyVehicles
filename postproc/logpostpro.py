@@ -37,7 +37,7 @@ def unicycle_patch(XY, yaw, color):
     return patches.PathPatch(path, facecolor=color, lw=2)
 
 def plot_position(axis, agent):
-    color = colors[agent.color]
+    color = (agent.color[0]/255,agent.color[1]/255,agent.color[2]/255,agent.color[3]/255)
 
     if(isinstance(agent, ag.AgentUnicycle)):
         axis.plot(np.trim_zeros(agent.log_pos[:,0], 'b'), np.trim_zeros(agent.log_pos[:,1], 'b'), color)
@@ -51,7 +51,7 @@ def plot_position(axis, agent):
 def plot_trajectories(axis, listofagents, B):
     p_final = []
     for agent in listofagents:
-        color = colors[agent.color]
+        color = (agent.color[0]/255,agent.color[1]/255,agent.color[2]/255,agent.color[3]/255)
         axis.plot(np.trim_zeros(agent.log_pos[:,0], 'b'), np.trim_zeros(agent.log_pos[:,1], 'b'), color)
         axis.plot(agent.log_pos[0, 0], agent.log_pos[0, 1], 'x'+color)
         axis.plot(agent.log_pos[agent.log_index-1, 0], agent.log_pos[agent.log_index-1, 1], 'o'+color)
