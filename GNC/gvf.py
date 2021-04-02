@@ -30,12 +30,14 @@ def gvf_control_2D_unicycle(p, dot_p, ke, kd, Path, direction):
     tau = direction*E.dot(n)
 
     dot_pd = tau - ke*e*n
-    ddot_pd = (E - ke*e*np.eye(2)).dot(H).dot(dot_p) - ke*n.T.dot(dot_p) * n
-    ddot_pdhat = -E.dot(dot_pd.dot(dot_pd.T)).dot(E).dot(ddot_pd) / np.linalg.norm(dot_pd)**3
+    ddot_pd = (direction*E - ke*e*np.eye(2)).dot(H).dot(dot_p) - ke*n.T.dot(dot_p) * n
+    ddot_pdhat = -E.dot(dot_pd.dot(dot_pd.T)).dot(E).dot(ddot_pd) /\
+    np.linalg.norm(dot_pd)**3
 
     dot_Xid = ddot_pdhat.T.dot(E).dot(dot_pd) / np.linalg.norm(dot_pd)
 
-    u_theta = dot_Xid + kd*dot_p.T.dot(E).dot(dot_pd)/(np.linalg.norm(dot_p)*np.linalg.norm(dot_pd))
+    u_theta = dot_Xid + kd*dot_p.T.dot(E).dot(dot_pd)/\
+    (np.linalg.norm(dot_p)*np.linalg.norm(dot_pd))
 
     return float(u_theta)
 

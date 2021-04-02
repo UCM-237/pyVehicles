@@ -29,6 +29,7 @@ class Agent:
         self.traj = np.zeros((self.traj_capacity, 2))
         self.traj_index = 0
         self.traj_full = False
+        self.wrt_label = False
 
         self.log_capacity = log_capacity
         self.log_pos = np.zeros((self.log_capacity, 2))
@@ -61,6 +62,12 @@ class Agent:
         else:
             for point in self.traj[:self.traj_index]:
                 surf.set_at((int(point[0]), int(surf.get_height()-point[1])), self.color)
+    def write_label(self,surf):
+        font = pygame.font.Font('freesansbold.ttf',15) 
+        text = font.render(str(self.label), True, (255,255,255)) 
+        textRect = text.get_rect()
+        textRect.center = (int(self.pos[0]), int(surf.get_height()-self.pos[1])) 
+        surf.blit(text,textRect)
 
 class AgentSI(Agent):
     def step_dt(self, u, dt):
@@ -129,7 +136,7 @@ class AgentUnicycle(Agent):
         Rot = np.array([[np.cos(yaw), np.sin(yaw)],[-np.sin(yaw), np.cos(yaw)]])
 
         apex = 80*np.pi/180
-        b = np.sqrt(1) / np.sin(apex)
+        b = np.sqrt(2) / np.sin(apex)
         a = b*np.sin(apex/2)
         h = b*np.cos(apex/2)
 
@@ -145,6 +152,8 @@ class AgentUnicycle(Agent):
 
         tuple_of_corners = ((z1[0][0],yoff-z1[1][0]),(z2[0][0],yoff-z2[1][0]),(z3[0][0],yoff-z3[1][0]))
         pygame.draw.polygon(surf, self.color, tuple_of_corners)
-
+        
         if(self.traj_draw):
             self.draw_trajectory(surf)
+        if(self.wrt_label):
+            self.write_label(surf)
