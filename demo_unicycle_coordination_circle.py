@@ -53,7 +53,7 @@ for idx,edge in enumerate(list_of_edges):
 
 # Directed vs Undirected graph. They have different convergence properties
 # If you want to control with an undirected graph, then uncomment the following.
-# B_dir = B
+B_dir = B
 
 for i in range(num_of_agents):
     theta_o = np.pi - (2*np.pi)*np.random.rand(1);
@@ -69,6 +69,9 @@ kd_circle = 60
 xo = 500 # Circle's center
 yo = 500
 ro = 150 # radius
+
+#
+direction = -1 # Clock or counter-clock wise. This defines what angular velocity is positive
 
 # run simulation
 pygame.init()
@@ -102,13 +105,14 @@ while(runsim):
         elif error_theta <= -np.pi:
           error_theta = error_theta + 2*np.pi
 
-    dr = -k_coord*B_dir.dot(error_theta)
+    dr = -k_coord*B_dir.dot(np.sin(error_theta))
+    dr = direction*dr
 
     # Guiding vector field
     for idx,agent in enumerate(list_of_agents):
         agent.draw(screen)
         circle_path = gvf.Path_gvf_circle(xo, yo, ro+dr[idx])
-        ut = gvf.gvf_control_2D_unicycle(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, 1)
+        ut = gvf.gvf_control_2D_unicycle(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, direction)
         agent.step_dt(us, ut, dt)
 
     clock.tick(fps)
