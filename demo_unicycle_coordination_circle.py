@@ -17,19 +17,21 @@ import logpostpro as lp
 import gvf
 
 # setup simulation
-WIDTH = 1000
-HEIGHT = 1000
+animation = 0
+if animation:
+  WIDTH = 1000
+  HEIGHT = 1000
 
-CENTERX = WIDTH/2
-CENTERY = WIDTH/2
+  CENTERX = WIDTH/2
+  CENTERY = WIDTH/2
 
-BLACK = (  0,   0,   0)
+  BLACK = (  0,   0,   0)
 
-size = [WIDTH, HEIGHT]
-screen = pygame.display.set_mode(size)
+  size = [WIDTH, HEIGHT]
+  screen = pygame.display.set_mode(size)
 
 # Network
-num_of_agents = 16
+num_of_agents = 3
 list_of_agents = []
 list_of_edges = [] # For the coordination on the circle
 
@@ -74,15 +76,21 @@ ro = 150 # radius
 direction = -1 # Clock or counter-clock wise. This defines what angular velocity is positive
 
 # run simulation
-pygame.init()
-clock = pygame.time.Clock()
-fps = 50
-dt = 1.0/fps
 time = 0
+end_time = 100
+
+if animation:
+  pygame.init()
+  clock = pygame.time.Clock()
+  fps = 50
+  dt = 1.0/fps
+else:
+  dt = 0.02
 
 runsim = True
 while(runsim):
-    screen.fill(BLACK)
+    if animation:
+      screen.fill(BLACK)
 
     us = 0 # We keep constant velocity
 
@@ -110,18 +118,24 @@ while(runsim):
 
     # Guiding vector field
     for idx,agent in enumerate(list_of_agents):
-        agent.draw(screen)
+        if animation:
+            agent.draw(screen)
         circle_path = gvf.Path_gvf_circle(xo, yo, ro+dr[idx])
         ut = gvf.gvf_control_2D_unicycle(agent.pos, agent.vel, ke_circle, kd_circle, circle_path, direction)
         agent.step_dt(us, ut, dt)
 
-    clock.tick(fps)
-    pygame.display.flip()
+    if animation:
+      clock.tick(fps)
+      pygame.display.flip()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            endtime = pygame.time.get_ticks()
-            pygame.quit()
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              endtime = pygame.time.get_ticks()
+              pygame.quit()
+              runsim = False
+    else:
+        time = time + dt
+        if time > end_time:
             runsim = False
 
 
